@@ -1,0 +1,78 @@
+# version: '3.8'
+
+# services:
+#   app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: laravel_app
+#     restart: unless-stopped
+#     ports:
+#       - "8000:80"
+#     environment:
+#       - APP_ENV=local
+#       - APP_DEBUG=true
+#       - APP_KEY=base64:some-random-key
+#     volumes:
+#       - .:/var/www/html
+#     networks:
+#       - app-network
+
+#   db:
+#     image: mysql:8.0
+#     container_name: laravel_db
+#     restart: unless-stopped
+#     environment:
+#       MYSQL_DATABASE: laravel
+#       MYSQL_ROOT_PASSWORD: secret
+#     ports:
+#       - "3307:3306"  # Port yang digunakan di host
+#     volumes:
+#       - dbdata:/var/lib/mysql
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
+
+# volumes:
+#   dbdata:
+
+
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - D:/xampp/htdocs/Sistem_Gudang:/var/www/html
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  dbdata:
