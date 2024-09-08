@@ -40,39 +40,149 @@
 #   dbdata:
 
 
+# version: '3.8'
+
+# services:
+#   app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: laravel_app
+#     restart: unless-stopped
+#     ports:
+#       - "8000:80"
+#     volumes:
+#       - D:/xampp/htdocs/Sistem_Gudang/public:/var/www/html
+#     networks:
+#       - app-network
+
+#   db:
+#     image: mysql:8.0
+#     container_name: laravel_db
+#     restart: unless-stopped
+#     environment:
+#       MYSQL_DATABASE: laravel
+#       MYSQL_ROOT_PASSWORD: secret
+#     ports:
+#       - "3307:3306"
+#     volumes:
+#       - dbdata:/var/lib/mysql
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
+
+# volumes:
+#   dbdata:
+
+
+# version: '3.8'
+
+# services:
+#   web:
+#     image: php:8.2-apache
+#     container_name: Sistem_Gudang_app
+#     ports:
+#       - "8000:80"  # Map port 80 di kontainer ke port 8000 di host
+#     volumes:
+#       - D:/xampp/htdocs/Sistem_Gudang:/var/www/html  # Mapping path lokal ke dalam kontainer
+#     depends_on:
+#       - db
+#     networks:
+#       - app-network
+#     environment:
+#       - APACHE_DOCUMENT_ROOT=/var/www/html/public
+#     extra_hosts:
+#       - "host.docker.internal:host-gateway"  # Optional, untuk komunikasi dengan host
+
+#   db:
+#     image: mysql:8.0
+#     container_name: mysql_db
+#     ports:
+#       - "3307:3306"  # Map port 3306 di kontainer ke port 3307 di host
+#     environment:
+#       # MYSQL_DATABASE: laravel
+#       # MYSQL_ROOT_PASSWORD: secret
+#       MYSQL_ROOT_PASSWORD: root_password
+#       MYSQL_DATABASE: laravel
+#       MYSQL_USER: root
+#       MYSQL_PASSWORD: secret
+#     volumes:
+#       - db_data:/var/lib/mysql
+#     networks:
+#       - app-network
+
+# volumes:
+#   db_data:
+
+# networks:
+#   app-network:
+
+
+
+
 version: '3.8'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_app
-    restart: unless-stopped
+  web:
+    image: php:8.2-apache
+    container_name: Sistem_Gudang_app
     ports:
-      - "8000:80"
+      - "8000:80"  # Map port 80 di kontainer ke port 8000 di host
     volumes:
-      - D:/xampp/htdocs/Sistem_Gudang:/var/www/html
+      - D:/xampp/htdocs/Sistem_Gudang:/var/www/html  # Mapping path lokal ke dalam kontainer
+    depends_on:
+      - db
     networks:
       - app-network
-
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Untuk komunikasi dengan host jika diperlukan
+    command: bash -c "docker-php-ext-install pdo pdo_mysql && apache2-foreground"  # Install ekstensi MySQL saat startup
+  
   db:
     image: mysql:8.0
-    container_name: laravel_db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: secret
+    container_name: db-sistem_gudang
     ports:
-      - "3307:3306"
+      - "3307:3306"  # Map port 3306 di kontainer ke port 3307 di host
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: sistem_gudang_2
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: secret
     volumes:
-      - dbdata:/var/lib/mysql
+      - db_data:/var/lib/mysql
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+
+      start_period: 30s
+      timeout: 10s
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"  # Akses phpMyAdmin di port 8080
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+volumes:
+  db_data:
 
 networks:
   app-network:
     driver: bridge
 
-volumes:
-  dbdata:
+
