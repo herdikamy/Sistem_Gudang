@@ -1,3 +1,24 @@
+# Sistem Gudang
+
+## Instalasi
+1. Clone repository: git clone https://github.com/username/sistem-gudang.git
+2. Masuk ke direktori: cd sistem-gudang
+3. Install dependensi: composer install
+4. Buat file .env dari .env.example dan sesuaikan konfigurasi database
+5. Jalankan migrasi: php artisan migrate
+6. Jalankan aplikasi: php artisan serve
+7. Build docker: docker build -t sistem_gudang_container .
+8. Jalankan docker: docker-compose up -d
+
+## Jika terjadi error di docker
+9. Buka file 000-default.conf di direktori /etc/apache2/sites-available/000-default.conf
+10. Ubah DocumentRoot /var/www/html/ menjad -> DocumentRoot /var/www/html/public
+11. Restart apache
+
+## Dokumentasi API
+Dokumentasi API dapat diakses di [Postman Documentation](https://documenter.getpostman.com/view/18833772/2sAXjNZWxV)
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
